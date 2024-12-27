@@ -1,0 +1,110 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #d4d5d0; /* Neutral gray */
+    color: #4c1223; /* Dark burgundy */
+    font-size: 16px;
+    line-height: 1.2;
+    margin: 24;
+    padding: 12px;
+}
+
+h1 {
+    font-size: 32px;
+    font-weight: bold;
+    color: #76638f; /* Deep purple */
+}
+
+.card {
+    background: #ffffff; /* White */
+    border-radius: 24px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 12px;
+    margin-bottom: 24px;
+    color: #4c1223; /* Dark burgundy */
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid #b7c2c3; /* Light blue */
+}
+
+.category {
+    margin-bottom: 24px;
+    background-color: #b7c2c3; /* Light blue */
+    border-radius: 24px;
+    padding: 12px;
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.category-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #4c1223; /* Dark burgundy */
+}
+
+.progress {
+    color: #b6a5b4; /* Soft purple */
+    font-size: 14px;
+}
+
+.checklist-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 12px;
+}
+
+.checklist-item input[type="checkbox"] {
+    margin-right: 12px;
+}
+
+.checklist-item label {
+    font-size: 14px;
+    color: #4c1223; /* Dark burgundy */
+}
+
+.button-group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.button {
+    background-color: #b7c2c3; /* Light blue */
+    color: #d4d5d0; /* Neutral gray */
+    border: none;
+    border-radius: 24px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #76638f; /* Deep purple */
+}
+
+.email-button {
+    background-color: #b6a5b4; /* Soft purple */
+}
+
+.email-button:hover {
+    background-color: #76638f; /* Deep purple */
+}
+
+#total-progress {
+    color: #76638f; /* Deep purple */
+    font-size: 14px;
+    font-weight: bold;
+}
