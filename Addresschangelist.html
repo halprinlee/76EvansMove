@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toronto Moving Checklist</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            background-color: #f5f5f5;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        .category {
+            margin-bottom: 2rem;
+        }
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .category-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+        }
+        .progress {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .checklist-item input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        .checklist-item label {
+            font-size: 0.95rem;
+            color: #444;
+        }
+        .save-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .save-button:hover {
+            background-color: #0056b3;
+        }
+        @media print {
+            body {
+                background: white;
+            }
+            .card {
+                box-shadow: none;
+            }
+            .save-button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header">
+            <h1>Toronto Moving Checklist</h1>
+            <div>
+                <span id="total-progress">0% Complete</span>
+                <button class="save-button" onclick="saveProgress()">Save Progress</button>
+            </div>
+        </div>
+        <div id="checklist"></div>
+    </div>
+
+    <script>
+        const categories = {
+            'Government & Official': [
+                'Ontario Driver\'s License/Photo ID (ServiceOntario - within 6 days)',
+                'Ontario Health Card (OHIP)',
+                'Vehicle Registration/License Plate Sticker',
+                'Voter Registration (Elections Canada and Ontario)',
+                'Canada Post Mail Forwarding',
+                'Canada Revenue Agency (CRA)',
+                'Toronto Public Library Card'
+            ],
+            'Transportation': [
+                'PRESTO Card Account'
+            ],
+            'Banking & Financial': [
+                'TD Bank Account',
+                'RBC Bank Account',
+                'Scotiabank Account',
+                'CIBC Account',
+                'BMO Account',
+                'RRSP Accounts',
+                'TFSA Accounts',
+                'Investment Accounts'
+            ],
+            'Credit Cards': [
+                'TD Credit Cards',
+                'RBC Credit Cards',
+                'AMEX Credit Cards',
+                'Other Credit Cards'
+            ],
+            'Insurance': [
+                'Auto Insurance',
+                'Life Insurance'
+            ],
+            'Memberships & Subscriptions': [
+                'Costco Membership',
+                'Costco Pharmacy Profile',
+                'Dexcom Account',
+                'Diabetes Supply Vendors',
+                'Netflix',
+                'Amazon Prime',
+                'Spotify',
+                'Apple Services'
+            ]
+        };
+
+        let checkedItems = new Set(JSON.parse(localStorage.getItem('checkedItems') || '[]'));
+
+        function createChecklist() {
+            const container = document.getElementById('checklist');
+            container.innerHTML = '';
+
+            Object.entries(categories).forEach(([categoryName, items]) => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category';
+                
+                const checkedCount = items.filter(item => checkedItems.has(item)).length;
+                const percentage = Math.round((checkedCount / items.length) * 100);
+
+                categoryDiv.innerHTML = `
+                    <div class="category-header">
+                        <span class="category-title">${categoryName}</span>
+                        <span class="progress">${percentage}% Complete</span>
+                    </div>
+                `;
+
+                items.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'checklist-item';
+                    itemDiv.innerHTML = `
+                        <input type="checkbox" id="${item}" ${checkedItems.has(item) ? 'checked' : ''}>
+                        <label for="${item}">${item}</label>
+                    `;
+                    categoryDiv.appendChild(itemDiv);
+                });
+
+                container.appendChild(categoryDiv);
+            });
+
+            updateTotalProgress();
+            addEventListeners();
+        }
+
+        function updateTotalProgress() {
+            const totalItems = Object.values(categories).flat().length;
+            const totalChecked = checkedItems.size;
+            const totalPercentage = Math.round((totalChecked / totalItems) * 100);
+            document.getElementById('total-progress').textContent = `${totalPercentage}% Complete`;
+        }
+
+        function addEventListeners() {
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        checkedItems.add(this.id);
+                    } else {
+                        checkedItems.delete(this.id);
+                    }
+                    localStorage.setItem('checkedItems', JSON.stringify([...checkedItems]));
+                    createChecklist();
+                });
+            });
+        }
+
+        function saveProgress() {
+            const timestamp = new Date().toISOString().split('T')[0];
+            const data = {
+                date: timestamp,
+                checkedItems: [...checkedItems],
+                categories
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `moving-checklist-${timestamp}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        createChecklist();
+    </script>
+</body>
+</html>
