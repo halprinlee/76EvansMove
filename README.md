@@ -104,8 +104,3 @@ function emailProgress() {
     // Handles email export
 }
 ```
-
-## Customization
-
-### Adding New Categories
-Add new categories to the
